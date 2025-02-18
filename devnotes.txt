@@ -1,0 +1,16 @@
+BACK-UP STEPS:
+mkdir -p ~/Downloads/tembopluscom_backup_30_01_2025
+docker exec 14461237a0ac mysqldump -u root -p"bymttvv" --all-databases > ~/Downloads/tembopluscom_backup_30_01_2025/mysql_dump.sql
+cp -r ./wordpress ~/Downloads/tembopluscom_backup_30_01_2025/wordpress
+cp docker-compose.yml ~/Downloads/tembopluscom_backup_30_01_2025/
+cp .env ~/Downloads/tembopluscom_backup_30_01_2025/
+cp devnotes.txt ~/Downloads/tembopluscom_backup_30_01_2025/
+cp backup_steps.md ~/Downloads/tembopluscom_backup_30_01_2025/
+zip -r ~/Downloads/tembopluscom_backup_30_01_2025.zip ~/Downloads/tembopluscom_backup_30_01_2025/
+rm -r ~/Downloads/tembopluscom_backup_30_01_2025/
+
+RESTORE STEPS:
+docker-compose down
+cp -r ~/Downloads/tembopluscom_backup_30_01_2025/wordpress ./
+docker-compose up -d
+cat ~/Downloads/tembopluscom_backup_30_01_2025/mysql_dump.sql | docker exec -i 14461237a0ac mysql -u root -p"bymttvv"

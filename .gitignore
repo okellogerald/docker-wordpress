@@ -1,0 +1,4 @@
+# All below files should be saved in a zip file somewhere as a backup
+/mysql
+/wordpress
+mysql_dump.sql
