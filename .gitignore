@@ -2,3 +2,4 @@
 /mysql
 /wordpress
 mysql_dump.sql
+.env
