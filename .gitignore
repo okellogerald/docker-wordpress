@@ -3,3 +3,5 @@
 /wordpress
 mysql_dump.sql
 *.env
+
+secrets.txt

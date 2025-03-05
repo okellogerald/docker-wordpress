@@ -34,6 +34,7 @@ backup:
 	cp docker-compose.yml $(BACKUP_DIR)/
 	cp .env $(BACKUP_DIR)/
 	cp backup_steps.md $(BACKUP_DIR)/ 2>/dev/null || true
+	cp secrets.txt $(BACKUP_DIR)/ 2>/dev/null || true
 	@echo "Creating ZIP archive..."
 	zip -r $(BACKUP_ZIP) $(BACKUP_DIR)/
 	@echo "Cleaning up temporary files..."

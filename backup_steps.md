@@ -1,3 +1,5 @@
+# WordPress Docker Backup and Restore Documentation
+
 > NOTES: `./mysql` and `./wordpress` are volumes to store all WordPress and MySQL related content. This is specified in the Docker Compose file.
 
 ## Backup Steps
@@ -9,7 +11,7 @@
 
 2. Create a database dump (this is more reliable than copying the MySQL directory):
     ```bash
-    docker exec ${container-id} mysqldump -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} > ~/Downloads/backup/mysql_dump.sql
+    docker exec MYSQL_CONTAINER_NAME mysqldump -u root -p"YOUR_ROOT_PASSWORD" YOUR_DATABASE_NAME > ~/Downloads/backup/mysql_dump.sql
     ```
 
 3. Backup WordPress files:
@@ -43,46 +45,45 @@
 
 4. Restore the database:
     ```bash
-    cat ~/Downloads/backup/mysql_dump.sql | docker exec -i ${container-id} mysql -u root -p"${MYSQL_ROOT_PASSWORD}"
+    cat ~/Downloads/backup/mysql_dump.sql | docker exec -i MYSQL_CONTAINER_NAME mysql -u root -p"YOUR_ROOT_PASSWORD" YOUR_DATABASE_NAME
     ```
 
-5. Check the `wordpress/wp-config.php` file to make sure wp variables are defined correctly
-    ```
-    define( 'DB_HOST', 'mysql:3306' ); // check in your docker compose
-    define( 'DB_NAME', 'wordpress'); // mysql db name
-    define( 'DB_USER', 'wp_admin' ); // if this user does not exist in mysql, you can create it and grant it all priviledges for the mysql db
-    define( 'DB_PASSWORD', 'y0koq6wclfa2y5u' ); // you can create a mysql db with this password
-    define('WP_HOME', 'http://localhost:8000'); // has to be full localhost url like this
-    define('WP_SITEURL', 'http://localhost:8000'); // has to be full localhost url like this
+5. Check the `wordpress/wp-config.php` file to make sure WordPress variables are defined correctly:
+    ```php
+    define('DB_HOST', 'mysql:3306'); // Use your Docker service name with port
+    define('DB_NAME', 'your_database_name'); // MySQL database name
+    define('DB_USER', 'your_database_user'); // MySQL user
+    define('DB_PASSWORD', 'your_secure_password'); // MySQL user password
+    define('WP_HOME', 'http://localhost:8000'); // Full localhost URL with port
+    define('WP_SITEURL', 'http://localhost:8000'); // Full localhost URL with port
     ```
 
 ## Publish to Remote Server
 
-1. **CPANEL**: Create a database (if one doesn't exist), e.g., `wordpress`.
-2. **CPANEL**: Create a user who will have access to this database, e.g., `admin`.
-3. **PHPMYADMIN**: Select the database you created, import `mysql_dump.sql` dump file.
-4. **FILEMANAGER**: Copy the local WordPress folder contents to the `public_html` directory.
+1. **CPANEL**: Create a database (if one doesn't exist)
+2. **CPANEL**: Create a user with appropriate permissions for this database
+3. **PHPMYADMIN**: Select the database you created, import `mysql_dump.sql` dump file
+4. **FILEMANAGER**: Copy the local WordPress folder contents to the `public_html` directory
 5. **FILEMANAGER**: Within `wp-config.php`, edit the following:
     ```php
-    define( 'DB_HOST', 'localhost' );
-    /** The created Database name or the existing one you found */
-    define( 'DB_NAME', 'wordpress'); // The (actual) name of the database. The name in the mysql-dump file may be different from the one you create in PHPMyAdmin. In this case, the name of the database to be used is the one on mysql-dump file. The one set on PHPMyAdmin acts as a placeholder only to point to the real database
-    /** The DB User you created and assigned to the database */
-    define( 'DB_USER', 'jamaahos_temboplus' ); // The name of the user you created and assigned to the created database in PHPMyAdmin
-    define( 'DB_PASSWORD', 'iHjT53vY2M' ); // The password you assigned to that user you created in PHPMyAdmin
-    /** The website. This avoids automatic redirects */
-    define( 'WP_HOME', 'https://jamaahost.com/' ); // the URL with the correct domain being used
-    define( 'WP_SITEURL', 'https://jamaahost.com/' ); // the URL with the correct domain being used
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'cpanel_database_name'); // The name of your CPanel database
+    define('DB_USER', 'cpanel_database_user'); // The CPanel database user
+    define('DB_PASSWORD', 'secure_password'); // The password for your CPanel database user
+    define('WP_HOME', 'https://yourdomain.com'); // Your actual domain
+    define('WP_SITEURL', 'https://yourdomain.com'); // Your actual domain
     ```
-6. Login to WordPress with the username and password you used locally.
+6. Login to WordPress with your admin credentials
 
-CPANEL (temboplus.com)
-db_name: wordpress
-username: wp_admin /wordpress db user/
-password: y0koq6wclfa2y5u /wordpress db user password/ 
+## Administrator Access
 
-WORDPRESS (temboplus.com/wp-admin)
-username:admin
-password:onmrpkgxp
+- To access phpMyAdmin locally, use the credentials specified in your environment variables
+- For WordPress admin access, use the admin credentials you created during installation
 
-> To login into phpMyAdmin locally use "root" username and the root-password
+## Security Notes
+
+- Store all passwords securely (consider using a password manager)
+- Never share database credentials or WordPress admin passwords
+- Use strong, unique passwords for all accounts
+- Consider using environment variables for sensitive information
+- Regularly update your backup to maintain recent copies of your site
