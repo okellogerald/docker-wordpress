@@ -1,21 +1,21 @@
-# Makefile for TemboPlusCom Backup and Restore
-# Date: 28/02/2025
+# Makefile for WordPress Backup and Restore
+# Date: $(shell date +%d/%m/%Y)
 
 # Variables
 BACKUP_DATE := $(shell date +%d_%m_%Y)
-BACKUP_DIR := ~/Downloads/temp/tembo_site_backup_$(BACKUP_DATE)
+BACKUP_DIR := ~/Downloads/temp/site_backup_$(BACKUP_DATE)
 BACKUP_ZIP := $(BACKUP_DIR).zip
-MYSQL_CONTAINER_ID := 198e66e28063
+MYSQL_CONTAINER_ID := $(shell docker ps -qf "name=mysql")
 MYSQL_ROOT_USER := root
-MYSQL_ROOT_PASSWORD := bymttvv
-MYSQL_DATABASE := wordpress
+MYSQL_ROOT_PASSWORD := $(shell grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
+MYSQL_DATABASE := $(shell grep MYSQL_DATABASE .env | cut -d '=' -f2)
 
 .PHONY: backup restore clean help
 
 # Default target
 help:
-	@echo "TemboPlusCom Backup and Restore Makefile"
-	@echo "-----------------------------------------"
+	@echo "WordPress Backup and Restore Makefile"
+	@echo "------------------------------------"
 	@echo "Available targets:"
 	@echo "  backup  - Create a full backup of the website"
 	@echo "  restore - Restore the website from the latest backup"
@@ -44,22 +44,22 @@ backup:
 # Restore target
 restore:
 	@echo "Starting restore process..."
-	@if [ ! -d ~/Downloads/tembopluscom_backup_$(BACKUP_DATE) ]; then \
+	@if [ ! -d ~/Downloads/site_backup_$(BACKUP_DATE) ]; then \
 		echo "Error: Backup directory not found. Please unzip the backup file first."; \
 		exit 1; \
 	fi
 	@echo "Stopping Docker containers..."
 	docker-compose down
 	@echo "Copying WordPress files..."
-	cp -r ~/Downloads/tembopluscom_backup_$(BACKUP_DATE)/wordpress ./
+	cp -r ~/Downloads/site_backup_$(BACKUP_DATE)/wordpress ./
 	@echo "Starting Docker containers..."
 	docker-compose up -d
 	@echo "Restoring database..."
-	cat ~/Downloads/tembopluscom_backup_$(BACKUP_DATE)/mysql_dump.sql | docker exec -i $(MYSQL_CONTAINER_ID) mysql -u $(MYSQL_ROOT_USER) -p"$(MYSQL_ROOT_PASSWORD)"
+	cat ~/Downloads/site_backup_$(BACKUP_DATE)/mysql_dump.sql | docker exec -i $(MYSQL_CONTAINER_ID) mysql -u $(MYSQL_ROOT_USER) -p"$(MYSQL_ROOT_PASSWORD)"
 	@echo "Restore completed successfully!"
 
 # Clean target
 clean:
 	@echo "Cleaning up backup directories..."
-	rm -rf ~/Downloads/tembopluscom_backup_*/ 2>/dev/null || true
+	rm -rf ~/Downloads/site_backup_*/ 2>/dev/null || true
 	@echo "Cleanup completed."
