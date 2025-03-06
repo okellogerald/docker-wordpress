@@ -59,6 +59,8 @@ To restore your WordPress site from a backup:
    - Update WordPress configuration
    - Display the URL where your site is accessible
 
+   > **Note**: If you can't access the homepage (e.g., "http://localhost:8000"), try accessing the admin area directly (e.g., "http://localhost:8000/wp-admin"). If the admin area works but the homepage doesn't, try opening your site in a fresh browser window.
+
 ## Publishing to a Remote Server
 
 To publish your WordPress site to a remote server (like cPanel):
@@ -142,7 +144,12 @@ To publish your WordPress site to a remote server (like cPanel):
 
 If you encounter issues during restore:
 
-1. **Container Detection**:
+1. **Connection Issues**:
+   - If "http://localhost:8000" doesn't connect, try "http://localhost:8000/wp-admin" directly
+   - If wp-admin works but the homepage doesn't, try accessing the site in a fresh browser window (or incognito mode)
+   - This can resolve issues related to browser caching or cookies from previous configurations
+
+2. **Container Detection**:
    - If the MySQL container isn't automatically detected, you'll be prompted to enter the container ID manually
    - Run `docker ps` to see all running containers
 

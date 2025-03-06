@@ -42,7 +42,7 @@ services:
     volumes:
       - ./wordpress:/var/www/html
     environment:
-      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}

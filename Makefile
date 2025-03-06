@@ -43,6 +43,7 @@ backup:
 	@echo "Copying configuration files..."
 	cp docker-compose.yml $(BACKUP_DIR)/
 	cp .env $(BACKUP_DIR)/
+	cp .gitignore $(BACKUP_DIR)/
 	cp secrets.txt $(BACKUP_DIR)/ 2>/dev/null || true
 	cp Makefile $(BACKUP_DIR)/ 2>/dev/null || true
 	# Before zipping, change to the parent directory of BACKUP_DIR
