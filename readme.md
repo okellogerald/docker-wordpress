@@ -1,6 +1,58 @@
 # WordPress Backup and Restore Guide
 
-This guide explains how to backup, restore, and publish your WordPress site using the included Makefile automation tools.
+This guide explains how to backup, restore, and publish your WordPress site using the included Makefile automation tools. It also covers how to set up a new WordPress project from scratch.
+
+## Creating a New WordPress Project
+
+The easiest way to set up a new WordPress project is to clone the ready-made repository:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/okellogerald/docker-wordpress my-wordpress-site
+   cd my-wordpress-site
+   ```
+
+2. **Customize Environment Variables**:
+   Edit the `.env` file to customize your settings:
+   ```bash
+   nano .env
+   ```
+   Update values for:
+   - MYSQL_ROOT_PASSWORD
+   - MYSQL_DATABASE
+   - MYSQL_USER
+   - MYSQL_PASSWORD
+
+3. **Create secrets.txt**:
+   Create a file named `secrets.txt` to store your WordPress admin credentials:
+   ```
+   WordPress Admin Username: admin
+   WordPress Admin Password: your_admin_password
+   WordPress Admin Email: your.email@example.com
+   ```
+
+4. **Start the Containers**:
+   ```bash
+   docker-compose up -d
+   ```
+
+5. **Complete WordPress Installation**:
+   - Open your browser and navigate to http://localhost:8000
+   - Follow the WordPress installation wizard
+   - Use the credentials from your secrets.txt file
+
+6. **Make Your First Backup**:
+   ```bash
+   make backup
+   ```
+
+The repository comes with everything you need, including:
+- Preconfigured docker-compose.yml
+- Properly set up Makefile for backup and restore
+- Default environment configuration
+- Directory structure for WordPress and MySQL
+
+Now your WordPress project is set up and ready for development!
 
 ## Prerequisites
 
